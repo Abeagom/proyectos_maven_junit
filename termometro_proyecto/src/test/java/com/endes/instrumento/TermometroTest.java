@@ -24,10 +24,27 @@ class TermometroTest {
 	}
 	
 	@Test
-	@DisplayName("Prueba válida de convertir a Farenheit") 
-	void testValidoConvertirAFarenheit() {
+	@DisplayName("Prueba válida para convertir a Farenheit") 
+	void testConvertirAFarenheit() {
 		double resultadoEsperado = 96.8;
 		assertEquals(resultadoEsperado, t.convertirAFahrenheit(), "La temperatura no coincide");
 	}
-
-}
+	
+	@Test
+	@DisplayName("Prueba válida para convertir a Kelvin") 
+	void testValidoConvertirAKelvin() {
+		double resultadoEsperado = 309.15;
+		assertEquals(resultadoEsperado, t.convertirAKelvin(), "La temperatura no coincide");
+	}
+	
+	@Test
+	@DisplayName("Prueba no válida para convertir a Kelvin") 
+	void testNoValidoConvertirAKelvin() {
+		Termometro t2 = new Termometro(-273.20); 
+		String resultadoEsperado = "La temperatura no puede estar por debajo del cero absoluto.";
+	    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->{
+	    t2.convertirAKelvin();
+	    });
+	    assertEquals(resultadoEsperado, exception.getMessage(), "La temperatura no válida fue reconocida");
+	    }
+	}
