@@ -47,4 +47,56 @@ class TermometroTest {
 	    });
 	    assertEquals(resultadoEsperado, exception.getMessage(), "La temperatura no válida fue reconocida");
 	    }
+	
+	@Test
+	@DisplayName("Prueba válida para ajustar la temperatura") 
+	void testValidoAjustarTemperatura() {
+		double resultadoEsperado = 38;
+		t.ajustarTemperatura(2);
+	    assertEquals(resultadoEsperado, t.getTemperaturaCelsius(), "La temperatura no coincide");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de temperatura en rango") 
+	void testEstaEnRango() {
+        assertTrue(t.estaEnRango(35, 37), "La temperatura dentro de rango no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de temperatura por debajo del rango") 
+	void testPorDebajoDeRango() {
+        assertFalse(t.estaEnRango(37, 38), "La temperatura dentro de rango no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de temperatura por encima del rango") 
+	void testPorEncimaDeRango() {
+        assertFalse(t.estaEnRango(34, 35), "La temperatura dentro de rango no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de EsCongelación por debajo de 0") 
+	void testEsCongelacionTrue() {
+		Termometro t2 = new Termometro(0);
+        assertTrue(t2.esCongelacion(), "La temperatura por debajo de 0 no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de EsCongelación por encima de 0") 
+	void testEsCongelaciónFalse() {
+        assertFalse(t.esCongelacion(), "La temperatura por encima de 0 no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de EsEbullicion por encima de 100") 
+	void testEsEBullicionTrue() {
+		Termometro t2 = new Termometro(100);
+        assertTrue(t2.esEbullicion(), "La temperatura por encima de 100 no es válida");
+	    }
+	
+	@Test
+	@DisplayName("Prueba de EsEbullicion por debajo de 100") 
+	void testEsEbullicionFalse() {
+        assertFalse(t.esEbullicion(), "La temperatura por debajo de 100 no es válida");
+	    }
 	}
