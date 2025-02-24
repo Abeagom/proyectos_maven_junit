@@ -1,5 +1,7 @@
 package com.endes.entidad;
 
+import java.util.Objects;
+
 /**
  * Representa un producto con nombre y precio.
  * 
@@ -7,6 +9,7 @@ package com.endes.entidad;
  */
 public class Product {
 
+    private Long id;
     private String name;
     private double price;
 
@@ -29,6 +32,32 @@ public class Product {
 
     public Product() {
         // Constructor vacío para posibles frameworks de serialización, etc.
+    }
+
+    /**
+     * Constructor con ID, nombre y precio.
+     * 
+     * @param id    Identificador único del producto.
+     * @param name  Nombre del producto.
+     * @param price Precio del producto.
+     */
+    public Product(Long id, String name, double price) {
+        this(name, price); // Llama al constructor principal
+        if (id != null && id < 0) {
+            throw new IllegalArgumentException("Error: ID no puede ser negativo");
+        }
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        if (id != null && id < 0) {
+            throw new IllegalArgumentException("Error: ID no puede ser negativo");
+        }
+        this.id = id;
     }
 
     public String getName() {
@@ -54,7 +83,22 @@ public class Product {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Double.compare(product.price, price) == 0 &&
+                Objects.equals(id, product.id) &&
+                Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
+    }
+
+    @Override
     public String toString() {
-        return "Product [name=" + name + ", price=" + price + "]";
+        return "Product{id=" + (id != null ? id : "null") + ", name='" + name + "', price=" + price + "}";
     }
 }

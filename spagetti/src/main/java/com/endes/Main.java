@@ -13,7 +13,17 @@ public class Main {
  * + ProductDAO + parece abrir conexiones sin cerrarlas correctamente.
  */
 	public static void main(String[] args) {
-	    ProductDAO productDAO = new ProductDAO();
+	 
+		ProductManager pm = new ProductManagerImpl();
+		pm.addProduct(null, 0);
+		
+	}
+	
+	
+	
+	
+	public static void crearProductDAO() {
+	   ProductDAO productDAO = new ProductDAO();
 
 	    // Crear tabla
 	    productDAO.crearTabla();
@@ -22,12 +32,11 @@ public class Main {
 	    // Insertar producto sin cerrar la conexión antes
 	    Faker faker = new Faker();
 		for(int i=0; i<100; i++) {
-			 productDAO.insertProduct(new Product(faker.commerce().productName(), faker.number().numberBetween(3, 199)));
+			 productDAO.insertProduct(new Product(faker.commerce().productName(), faker.number().randomDouble(2, 3, 199)));
 
 		}
 		
 		 productDAO.close(); 
-	}
-
+}
 
 }

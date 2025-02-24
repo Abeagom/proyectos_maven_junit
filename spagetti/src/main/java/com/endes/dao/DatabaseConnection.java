@@ -9,7 +9,7 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 
-    private static final String PATH = "/home/desarrolloweb/Documents/git-projects";
+    private static final String PATH = "/home/kronos/Documentos/git_proyectos";
     private static final String URL = "jdbc:sqlite:" + PATH + "/proyectos_maven_junit/BBDD/spaghetti";
     
     private static DatabaseConnection instance;
