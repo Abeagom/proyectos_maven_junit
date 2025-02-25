@@ -33,7 +33,7 @@ class ProductTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @NullAndEmptySource //--> Probar automaticamente cadenas vacias
     @DisplayName("Debe lanzar IllegalArgumentException si el nombre es nulo o vacío")
     void shouldThrowExceptionForInvalidName(String invalidName) {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> new Product(invalidName, 100));

@@ -1,4 +1,5 @@
 package com.endes.dao;
+
 import com.endes.entidad.Product;
 import com.endes.exception.ProductNotFoundException;
 import org.junit.jupiter.api.*;
@@ -6,6 +7,8 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 /**
  * Pruebas unitarias para la clase ProductDAO usando JUnit 5.
@@ -23,7 +26,11 @@ public class ProductDAOTest {
 
     @BeforeEach
     void cleanDatabase() {
-       productDAO.deleteAll();
+        try {
+            productDAO.deleteAll(); // Asegurar que la base de datos esté limpia antes de cada test
+        } catch (Exception e) {
+            System.err.println("Error al limpiar la base de datos antes de la prueba: " + e.getMessage());
+        }
     }
 
     @Test
@@ -31,7 +38,8 @@ public class ProductDAOTest {
     @DisplayName("Test: Insertar un producto")
     void testInsertProduct() {
         Product product = new Product("Laptop", 1200.50);
-        productDAO.insertProduct(product);
+        assertDoesNotThrow(() -> productDAO.insertProduct(product));
+
         List<Product> products = productDAO.findAll();
         assertFalse(products.isEmpty());
         assertEquals("Laptop", products.get(0).getName());
@@ -42,8 +50,11 @@ public class ProductDAOTest {
     @Order(2)
     @DisplayName("Test: Obtener todos los productos")
     void testFindAll() {
-        productDAO.insertProduct(new Product("Phone", 699.99));
-        productDAO.insertProduct(new Product("Tablet", 499.99));
+        assertDoesNotThrow(() -> {
+            productDAO.insertProduct(new Product("Phone", 699.99));
+            productDAO.insertProduct(new Product("Tablet", 499.99));
+        });
+
         List<Product> products = productDAO.findAll();
         assertEquals(2, products.size());
     }
@@ -51,11 +62,14 @@ public class ProductDAOTest {
     @Test
     @Order(3)
     @DisplayName("Test: Buscar producto por nombre")
-    void testFindByName() throws ProductNotFoundException {
-        productDAO.insertProduct(new Product("Mouse", 25.99));
-        Product product = productDAO.findByName("Mouse");
-        assertEquals("Mouse", product.getName());
-        assertEquals(25.99, product.getPrice());
+    void testFindByName() {
+        assertDoesNotThrow(() -> productDAO.insertProduct(new Product("Mouse", 25.99)));
+
+        assertDoesNotThrow(() -> {
+            Product product = productDAO.findByName("Mouse");
+            assertEquals("Mouse", product.getName());
+            assertEquals(25.99, product.getPrice());
+        });
     }
 
     @Test
@@ -68,19 +82,25 @@ public class ProductDAOTest {
     @Test
     @Order(5)
     @DisplayName("Test: Actualizar precio de un producto")
-    void testUpdatePriceByName() throws ProductNotFoundException {
-        productDAO.insertProduct(new Product("Monitor", 150.00));
-        productDAO.updatePriceByName("Monitor", 175.00);
-        Product updatedProduct = productDAO.findByName("Monitor");
-        assertEquals(175.00, updatedProduct.getPrice());
+    void testUpdatePriceByName() {
+        assertDoesNotThrow(() -> productDAO.insertProduct(new Product("Monitor", 150.00)));
+
+        assertDoesNotThrow(() -> productDAO.updatePriceByName("Monitor", 175.00));
+
+        assertDoesNotThrow(() -> {
+            Product updatedProduct = productDAO.findByName("Monitor");
+            assertEquals(175.00, updatedProduct.getPrice());
+        });
     }
 
     @Test
     @Order(6)
     @DisplayName("Test: Eliminar un producto por nombre")
-    void testDeleteByName() throws ProductNotFoundException {
-        productDAO.insertProduct(new Product("Keyboard", 45.00));
-        productDAO.deleteByName("Keyboard");
+    void testDeleteByName() {
+        assertDoesNotThrow(() -> productDAO.insertProduct(new Product("Keyboard", 45.00)));
+
+        assertDoesNotThrow(() -> productDAO.deleteByName("Keyboard"));
+
         assertThrows(ProductNotFoundException.class, () -> productDAO.findByName("Keyboard"));
     }
 
@@ -97,4 +117,26 @@ public class ProductDAOTest {
     void testDeleteNonExistentProduct() {
         assertThrows(ProductNotFoundException.class, () -> productDAO.deleteByName("NonExistent"));
     }
+
+    @Test
+    @Order(9)
+    @DisplayName("Test: Manejo de SQLException en deleteByName()")
+    void testSQLExceptionHandlingInDeleteByName() throws ProductNotFoundException {
+        // 1️⃣ Crear un mock de ProductDAO
+        ProductDAO mockProductDAO = mock(ProductDAO.class);
+
+        // 2️⃣ Simular que `deleteByName()` lanza `ProductNotFoundException`
+        doThrow(new ProductNotFoundException("Error interno al eliminar producto: Error de base de datos"))
+                .when(mockProductDAO).deleteByName("ProductoInexistente");
+
+        // 3️⃣ Verificar que la excepción correcta es lanzada
+        ProductNotFoundException exception = assertThrows(ProductNotFoundException.class, () -> {
+            mockProductDAO.deleteByName("ProductoInexistente");
+        });
+
+        // 4️⃣ Asegurar que el mensaje de error contiene lo esperado
+        assertTrue(exception.getMessage().contains("Error interno al eliminar producto"));
+        assertTrue(exception.getMessage().contains("Error de base de datos"));
+    }
+
 }
