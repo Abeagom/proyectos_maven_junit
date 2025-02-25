@@ -19,6 +19,15 @@ public class ProductManagerImpl implements ProductManager {
     public ProductManagerImpl() {
         this.productDAO = new ProductDAO();
     }
+    
+    /**
+     * Constructor para pruebas que permite inyectar un mock de `ProductDAO`.
+     */
+    public ProductManagerImpl(ProductDAO productDAO) {
+        this.productDAO = productDAO;
+    }
+
+    
 
     /**
      * Crea la tabla 'product' si no existe.

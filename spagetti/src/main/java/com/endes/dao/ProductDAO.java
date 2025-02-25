@@ -168,4 +168,14 @@ public class ProductDAO {
     public void close() {
         DatabaseConnection.getInstance().closeConnection();
     }
+    
+    public void deleteAll() {
+        String sql = "DELETE FROM product";
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al eliminar todos los productos: " + e.getMessage(), e);
+        }
+    }
 }
