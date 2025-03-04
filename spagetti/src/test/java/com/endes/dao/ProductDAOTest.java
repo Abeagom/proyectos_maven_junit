@@ -2,6 +2,7 @@ package com.endes.dao;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.endes.entidad.Product;
+import com.endes.exception.ProductNotFoundException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductDAOTest {
@@ -74,10 +76,13 @@ class ProductDAOTest {
 				assertEquals(1200.0, product.getPrice());
 			
 			});
-		
-		
-		
-		
+	}
+	
+	@Test
+	@Order(4)
+	@DisplayName("Test :: Buscar producto inexistentes lanza excepción")
+	void testFindByNameNotFound() {
+		assertThrows(ProductNotFoundException.class, ()->productDAO.findByName("No exist"));
 	}
 	
 	
