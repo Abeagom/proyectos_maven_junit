@@ -13,7 +13,18 @@ public class Main {
  * + ProductDAO + parece abrir conexiones sin cerrarlas correctamente.
  */
 	public static void main(String[] args) {
-	    ProductDAO productDAO = new ProductDAO();
+		
+		eliminar();
+	}
+	
+	public static void eliminar() {
+		 ProductDAO productDAO = new ProductDAO();
+		 productDAO.deleteAll();
+		 productDAO.close(); 
+	}
+
+	public static void agregar() {
+		ProductDAO productDAO = new ProductDAO();
 
 	    // Crear tabla
 	    productDAO.crearTabla();
@@ -28,6 +39,5 @@ public class Main {
 		
 		 productDAO.close(); 
 	}
-
 
 }

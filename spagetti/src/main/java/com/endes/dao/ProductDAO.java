@@ -7,11 +7,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 /**
  * DAO para la tabla "product". Maneja las operaciones CRUD con la base de datos.
  * Versión sin logs externos; usa System.out.println / System.err.println.
  */
 public class ProductDAO {
+	
+	
+	public void deleteAll() {
+		String sql = "DELETE FROM product";
+		try(Connection conn = DatabaseConnection.getInstance().getConnection()) {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		}catch(SQLException ex) {
+		//	throw new RuntimeErrorException(ex, "Error al eliminar los productos " + ex.getMessage());
+		}
+	}
+	
 
     /**
      * Crea la tabla "product" si no existe.
