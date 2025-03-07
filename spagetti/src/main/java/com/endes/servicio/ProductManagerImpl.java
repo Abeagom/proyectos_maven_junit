@@ -20,7 +20,11 @@ public class ProductManagerImpl implements ProductManager {
         this.productDAO = new ProductDAO();
     }
 
-    /**
+	public ProductManagerImpl(ProductDAO productDAO) {
+		 this.productDAO = productDAO;
+	}
+
+	/**
      * Crea la tabla 'product' si no existe.
      */
     @Override
